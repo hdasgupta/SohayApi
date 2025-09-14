@@ -1,0 +1,1 @@
+INSERT INTO public.users(username,password,roles,enabled,expired,account_locked,credential_locked) values ('admin','$2a$10$uzi2ozUlbtSBn5QkibgU8uicCK1XMpA/k04c7msJDVx3szXfug0YW','ADMIN',true,false,false,false) returning id
