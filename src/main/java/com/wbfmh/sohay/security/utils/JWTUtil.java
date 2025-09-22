@@ -1,6 +1,5 @@
 package com.wbfmh.sohay.security.utils;
 
-import com.wbfmh.sohay.security.data.entities.Users;
 import com.wbfmh.sohay.security.data.repos.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -52,7 +51,7 @@ public class JWTUtil {
     public Mono<String> generateToken(String username) {
 
         return doGenerateToken(
-                userRepository.findByUsername(
+                userRepository.findByUsernameAndEnabledIsTrueAndExpiredIsFalseAndAccountLockedIsFalseAndCredentialLockedIsFalse(
                         username
                 ).map(
                         user -> {

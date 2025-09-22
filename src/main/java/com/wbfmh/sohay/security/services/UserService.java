@@ -24,7 +24,7 @@ public class UserService implements ReactiveUserDetailsService {
 
     @Override
     public Mono<UserDetails> findByUsername(String username) {
-        return userRepository.findByUsername(username)
+        return userRepository.findByUsernameAndEnabledIsTrueAndExpiredIsFalseAndAccountLockedIsFalseAndCredentialLockedIsFalse(username)
                 .cast(UserDetails.class)
                 .switchIfEmpty(Mono.error(new UsernameNotFoundException("User not found: " + username)));
     }
