@@ -4,6 +4,8 @@ import com.wbfmh.sohay.security.data.dtos.UsersDto;
 import com.wbfmh.sohay.security.data.entities.Users;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Component
 public class UserD2EMapper {
     public Users map(UsersDto dto) {
@@ -12,6 +14,8 @@ public class UserD2EMapper {
                 dto.getUsername(),
                 dto.getPassword(),
                 dto.getRoles(),
+                LocalDate.now().plusYears(1),
+                0,
                 true,
                 false,
                 false,

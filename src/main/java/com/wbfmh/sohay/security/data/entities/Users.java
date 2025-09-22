@@ -9,7 +9,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,6 +26,8 @@ public class Users implements UserDetails {
     private String username;
     private String password;
     private String roles; // e.g., "ROLE_USER,ROLE_ADMIN"
+    private LocalDate expiryDate;
+    private Integer passwordAttempt = 0;
     private boolean enabled = true;
     private boolean expired = false;
     private boolean accountLocked = false;

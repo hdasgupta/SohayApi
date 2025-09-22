@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+
 @Service
 public class UserService implements ReactiveUserDetailsService {
     @Autowired
@@ -34,6 +36,8 @@ public class UserService implements ReactiveUserDetailsService {
                         dto.getUsername(),
                         passwordEncoder.encode(dto.getPassword()),
                         dto.getRoles(),
+                        LocalDate.now().plusYears(1),
+                        0,
                         true,
                         false,
                         false,
