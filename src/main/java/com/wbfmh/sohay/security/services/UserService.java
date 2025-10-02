@@ -14,6 +14,9 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 
+import static com.wbfmh.sohay.security.consts.DBConstant.MAX_USER_VALIDITY_IN_YEAR;
+import static com.wbfmh.sohay.security.consts.DBConstant.PASSWORD_ATTEMPT;
+
 @Service
 public class UserService implements ReactiveUserDetailsService {
     @Autowired
@@ -24,7 +27,7 @@ public class UserService implements ReactiveUserDetailsService {
 
     @Override
     public Mono<UserDetails> findByUsername(String username) {
-        return userRepository.findByUsernameAndEnabledIsTrueAndExpiredIsFalseAndAccountLockedIsFalseAndCredentialLockedIsFalse(username)
+        return userRepository.findByUsernameAndEnabledIsTrueAndExpiredIsFalseAndAccountLockedIsFalseAndCredentialLockedIsFalseAndPasswordAttemptLessThan(username,PASSWORD_ATTEMPT)
                 .cast(UserDetails.class)
                 .switchIfEmpty(Mono.error(new UsernameNotFoundException("User not found: " + username)));
     }
@@ -36,7 +39,7 @@ public class UserService implements ReactiveUserDetailsService {
                         dto.getUsername(),
                         passwordEncoder.encode(dto.getPassword()),
                         dto.getRoles(),
-                        LocalDate.now().plusYears(1),
+                        LocalDate.now().plusYears(MAX_USER_VALIDITY_IN_YEAR),
                         0,
                         true,
                         false,

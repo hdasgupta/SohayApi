@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static com.wbfmh.sohay.security.consts.DBConstant.PASSWORD_ATTEMPT;
+
 @Component
 public class JWTUtil {
 
@@ -51,8 +53,9 @@ public class JWTUtil {
     public Mono<String> generateToken(String username) {
 
         return doGenerateToken(
-                userRepository.findByUsernameAndEnabledIsTrueAndExpiredIsFalseAndAccountLockedIsFalseAndCredentialLockedIsFalse(
-                        username
+                userRepository.findByUsernameAndEnabledIsTrueAndExpiredIsFalseAndAccountLockedIsFalseAndCredentialLockedIsFalseAndPasswordAttemptLessThan(
+                        username,
+                        PASSWORD_ATTEMPT
                 ).map(
                         user -> {
                             Map<String, Object> claims = new HashMap<>();

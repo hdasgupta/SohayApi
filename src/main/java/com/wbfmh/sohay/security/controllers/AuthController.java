@@ -4,6 +4,7 @@ import com.wbfmh.sohay.security.data.dtos.AuthRequest;
 import com.wbfmh.sohay.security.data.dtos.AuthResponse;
 import com.wbfmh.sohay.security.data.repos.UserRepository;
 import com.wbfmh.sohay.security.utils.JWTUtil;
+import io.netty.channel.ChannelOption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,9 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.Objects;
+
+import static com.wbfmh.sohay.security.consts.DBConstant.MAX_USER_VALIDITY_IN_YEAR;
+import static com.wbfmh.sohay.security.consts.DBConstant.PASSWORD_ATTEMPT;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -32,7 +36,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public Mono<ResponseEntity<AuthResponse>> login(@RequestBody AuthRequest ar) {
-        return userRepository.findByUsernameAndEnabledIsTrueAndExpiredIsFalseAndAccountLockedIsFalseAndCredentialLockedIsFalse(ar.getUsername())
+        return userRepository.findByUsernameAndEnabledIsTrueAndExpiredIsFalseAndAccountLockedIsFalseAndCredentialLockedIsFalseAndPasswordAttemptLessThan(ar.getUsername(), PASSWORD_ATTEMPT)
                 .doOnEach(user-> {
                     if(Objects.requireNonNull(user.get()).getExpiryDate().isBefore(LocalDate.now())) {
                         Objects.requireNonNull(user.get()).setExpired(true);
@@ -40,7 +44,7 @@ public class AuthController {
                     }
                     else if (!passwordEncoder.matches(ar.getPassword(), Objects.requireNonNull(user.get()).getPassword())) {
                         Objects.requireNonNull(user.get()).setPasswordAttempt(Objects.requireNonNull(user.get()).getPasswordAttempt()+1);
-                        if (Objects.requireNonNull(user.get()).getPasswordAttempt()>=3) {
+                        if (Objects.requireNonNull(user.get()).getPasswordAttempt()>=PASSWORD_ATTEMPT) {
                             Objects.requireNonNull(user.get()).setCredentialLocked(true);
                             userRepository.save(Objects.requireNonNull(user.get())).subscribe();
                         }

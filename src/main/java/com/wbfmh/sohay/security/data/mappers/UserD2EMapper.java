@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
+import static com.wbfmh.sohay.security.consts.DBConstant.MAX_USER_VALIDITY_IN_YEAR;
+
 @Component
 public class UserD2EMapper {
     public Users map(UsersDto dto) {
@@ -14,7 +16,7 @@ public class UserD2EMapper {
                 dto.getUsername(),
                 dto.getPassword(),
                 dto.getRoles(),
-                LocalDate.now().plusYears(1),
+                LocalDate.now().plusYears(MAX_USER_VALIDITY_IN_YEAR),
                 0,
                 true,
                 false,
